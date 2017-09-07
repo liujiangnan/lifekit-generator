@@ -27,7 +27,7 @@ program
 program
   .command('create')
   .action(function() {
-    let remote_path = path.resolve(__dirname, '../../lifekit');
+    let remote_path = path.resolve(__dirname, '../../lifekit-generator');
 
     // Path
     var destinationPath = '.';
