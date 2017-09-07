@@ -1,0 +1,22 @@
+{
+  "name": "lifekit-generator",
+  "bin": {
+    "lifekit": "./bin/lifekit"
+  },
+  "version": "1.0.0",
+  "devDependencies": {},
+  "directories": {
+    "bin": "./bin"
+  },
+  "description": "物联网应用模块的最小化平台支撑",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "liujiangnan",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.11.0"
+  }
+}
