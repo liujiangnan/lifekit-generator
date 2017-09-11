@@ -62,7 +62,7 @@ program
   .command('publish')
   //注册一个callback函数
   .action(function() { 
-    console.log("发布模块！");
+    console.log("发布模块待开发！");
 	});
 	
 //安装模块
@@ -71,16 +71,24 @@ program
   .command('install')
   //注册一个callback函数
   .action(function() {  
-    var child = exec('npm install', function(e, stdout, stderr) {
-      if(!e){
-        console.log(stdout);
-        console.log(stderr);
-      }else{
-        console.log(e);
+    if (typeof program.args[0] !== 'string') {
+      return;
+    } 
+    //组件名称
+    let component = program.args[0]; 
+
+    exec('npm install '+component,function(error, stdout, stderr){
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
       }
-    });
-    child.stdout.on('message', (data) => {
-      console.log(`输出：${data}`);
+      fs.rename("./node_modules/"+component,"./engine/"+component,function(err){
+        if(err){
+          console.log(err);
+          return;
+        }
+        console.log(component+"安装成功！");
+      });
     });
   });
 
