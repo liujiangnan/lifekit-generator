@@ -1,10 +1,9 @@
 {
   "name": "lifekit-generator",
   "bin": {
-    "lifekit": "./bin/lifekit",
-    "lifekitx": "./bin/lifekitx"
+    "lifekit": "./bin/lifekit"
   },
-  "version": "1.0.7",
+  "version": "1.0.9",
   "devDependencies": {},
   "directories": {
     "bin": "./bin"
