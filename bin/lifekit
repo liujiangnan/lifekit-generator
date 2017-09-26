@@ -188,7 +188,7 @@ function createApplication(app_name, path, remote_path) {
 			"test": "echo \"Error: no test specified\" && exit 1"
 		},
 		"dependencies": {
-			"lifekit": ">1.0.5"
+			"lifekit": ">1.0.11"
 		}
 	}
 		
