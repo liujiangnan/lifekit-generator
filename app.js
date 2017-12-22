@@ -22,7 +22,7 @@ const fs = require('fs');
 
 const cors = require('koa-cors');
 
-const lifekit = require("lifekit");
+const lifekit = require(root_path+"/lifekit");
 
 const app = new Koa();
 
