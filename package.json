@@ -3,7 +3,7 @@
   "bin": {
     "lifekit": "./bin/lifekit"
   },
-  "version": "1.0.12",
+  "version": "1.0.13",
   "devDependencies": {},
   "directories": {
     "bin": "./bin"
