@@ -55,6 +55,35 @@ program
     });
   });
 
+//创建模块
+program.command('add').action(function(){
+  let remote_path = path.resolve(__dirname, '../../lifekit-generator'); 
+  // Path
+  var destinationPath = '.';
+  if (typeof program.args[0] === 'string') {
+    destinationPath = program.args[0];
+  }
+  // App name
+  var appName = path.basename(path.resolve(destinationPath))
+
+  // Generate application
+  emptyDirectory(destinationPath, function(empty) {
+    if (empty || program.force) {
+      createEngine(appName, destinationPath, remote_path);
+    } else {
+      confirm('destination is not empty, continue? [y/n] ', function(ok) {
+        if (ok) {
+          process.stdin.destroy();
+          createEngine(appName, destinationPath, remote_path);
+        } else {
+          console.error('aborting');
+          exit(1);
+        }
+      });
+    }
+  });
+});
+
 
 //发布模块
 program
@@ -154,6 +183,35 @@ function confirm(msg, callback) {
   });
 }
 
+function createEngine(engine_name, path, remote_path){
+  let flag = fs.existsSync(path);
+  // 不存在
+  if (!flag) {
+    fs.mkdirSync(path);
+  } 
+	// 复制模板
+	copyFile( remote_path+"/engine/template", path); 
+	// package.json
+	var pkg = {
+		name: engine_name,
+    version: '0.1.0',
+    description: engine_name,
+		private: true,
+		"scripts": {
+			"test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC"
+	}
+		
+	fs.writeFileSync(path+"/package.json", JSON.stringify(pkg, null, 2));
+	fs.writeFileSync(path+"/README.md", "");
+	
+	console.log();
+	console.log(engine_name+"模块初始化成功！"); 
+	console.log();
+}
+
 /**
  * Create application at the given directory `path`.
  *
@@ -174,9 +232,7 @@ function createApplication(app_name, path, remote_path) {
 	// 复制bin目录
 	copyFile( remote_path+"/bin", path+"/bin" );
 	// 复制engine目录
-  copyFile( remote_path+"/engine", path+"/engine" );
-  // 复制lifekit目录
-  copyFile( remote_path+"/lifekit", path+"/lifekit" );
+  copyFile( remote_path+"/engine", path+"/engine" ); 
 	// 复制app.js
 	copyFile( remote_path+"/app.js", path+"/app.js"  );
  
@@ -188,41 +244,23 @@ function createApplication(app_name, path, remote_path) {
 		"scripts": {
 			"start": "node app.js",  
 			"test": "echo \"Error: no test specified\" && exit 1"
-		},
-		"dependencies": {
-			"debug": "^2.6.3",
-      "ejs": "^2.5.6",
-      "koa": "^2.2.0",
-      "koa-bodyparser": "^3.2.0",
-      "koa-convert": "^1.2.0",
-      "koa-cors": "0.0.16",
-      "koa-generic-session": "^1.11.5",
-      "koa-json": "^2.0.2",
-      "koa-jwt": "^3.2.1",
-      "koa-logger": "^2.0.1",
-      "koa-onerror": "^1.2.1",
-      "koa-router": "^7.0.1",
-      "koa-send": "^4.1.0",
-      "koa-static": "^3.0.0",
-      "koa-views": "^5.2.1",
-      "object-keys": "^1.0.11",
-      "node-uuid": "^1.4.8",
-      "socket.io": "^1.7.3",
-      "socketio-jwt": "^4.5.0"
 		}
-	}
-		
+	} 
 	fs.writeFileSync(path+"/package.json", JSON.stringify(pkg, null, 2));
-	fs.writeFileSync(path+"/README.md", "");
-	
-	console.log();
-	console.log('   install dependencies:');
-	console.log('     %s cd %s && npm install', prompt, path);
-	console.log();
-	console.log('   run the app:');
-	console.log('     %s npm start', prompt); 
-
-	console.log();
+  fs.writeFileSync(path+"/README.md", "");
+  
+  console.log('   install dependencies ......');
+  exec(' cd '+app_name+' &&  npm install lifekit --save',function(error, stdout, stderr){
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    } 
+    fs.renameSync("./"+app_name+"/node_modules/lifekit","./"+app_name+"/lifekit");
+    console.log();
+    console.log('   run the app:');
+    console.log('     %s npm start', prompt);  
+    console.log();
+  }); 
 }
 
 /*
